@@ -4,23 +4,21 @@ import { Link } from "react-router-dom";
 
 import axios from "axios";
 
-const initialValues = {
-  title: "",
-  director: "",
-  genre: "",
-  metascore: 0,
-  description: "",
-};
-
 const EditMovieForm = (props) => {
   const { id } = useParams();
   const { push } = useHistory();
 
-  const [movie, setMovie] = useState(initialValues);
+  const [movie, setMovie] = useState({
+    title: "",
+    director: "",
+    genre: "",
+    metascore: 0,
+    description: "",
+  });
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/movies/:${id}`)
+      .get(`http://localhost:5000/api/movies/${id}`)
       .then((res) => {
         setMovie(res.data);
       })
@@ -41,11 +39,13 @@ const EditMovieForm = (props) => {
     axios
       .put(`http://localhost:5000/api/movies/${id}`, movie)
       .then((res) => {
-        props.setMovies(res.data);
         push(`/movies/${id}`);
       })
       .catch((err) => {
         console.log(err);
+      })
+      .then(() => {
+        props.getMovies();
       });
   };
 
